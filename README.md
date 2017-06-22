@@ -11,6 +11,8 @@
 - Timezone - I don't see in the assignment how to deal with Timezones. There is no information from the API in which timezone is the localdate.
   Assuming it is always in UTC, but should be the UTC information present in the response? Currently I implemented it that
   it is present for ToughJet, but not for CrazyAir (should be rewritten).
+- For translating between POJOs, a reflection could be used (or some 3rd party library), however I am not keen on using
+  reflexion.
 
 **Travix - Problem to be solved**
 
