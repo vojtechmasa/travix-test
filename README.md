@@ -6,6 +6,9 @@
 - A service layer or an object representing BusyFlights airline (following DDD) should be implemented
 - Constraint for max 4 passengers in the request needs to be implemented. Would be located in a service layer or in BusyFlights
   domain object.
+- Rounding of the price to 2 decimals should be implemented. Simply by formatting the number - BusyFlightsResponse would
+  have the "fare" field of type String rather.
+- Classes should be divided into packages more carefully.
 
 
 **Travix - Problem to be solved**
