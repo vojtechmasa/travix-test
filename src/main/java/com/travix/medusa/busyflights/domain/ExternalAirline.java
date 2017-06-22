@@ -8,6 +8,6 @@ import java.util.Collection;
 /**
  * Represents an external airline which flights need to be aggregated.
  */
-public interface Airline {
+public interface ExternalAirline {
   Collection<BusyFlightsResponse> getFlights(BusyFlightsRequest busyFlightsRequest);
 }

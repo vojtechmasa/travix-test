@@ -1,7 +1,7 @@
 package com.travix.medusa.busyflights;
 
 
-import com.travix.medusa.busyflights.domain.Airline;
+import com.travix.medusa.busyflights.domain.ExternalAirline;
 import com.travix.medusa.busyflights.domain.busyflights.BusyFlightsRequest;
 import com.travix.medusa.busyflights.domain.busyflights.BusyFlightsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +18,21 @@ import static java.util.stream.Collectors.toList;
 @RestController
 public class BusyFlightsController {
 
-  private final Collection<Airline> airlines;
+  private final Collection<ExternalAirline> externalAirlines;
 
   @Autowired
-  public BusyFlightsController(Collection<Airline> airlines) {
-    this.airlines = airlines;
+  public BusyFlightsController(Collection<ExternalAirline> externalAirlines) {
+    this.externalAirlines = externalAirlines;
   }
 
   @RequestMapping(path = "/busyFlights", method = RequestMethod.GET)
   List<BusyFlightsResponse> get(BusyFlightsRequest busyFlightsRequest) {
 
     //TODO move to a service layer
-    return airlines.stream()
-        .map(airline -> airline.getFlights(busyFlightsRequest))
+    return externalAirlines.stream()
+        .map(externalAirline -> externalAirline.getFlights(busyFlightsRequest))
         .flatMap(Collection::stream)
-        .sorted(Comparator.comparingDouble(BusyFlightsResponse::getFare))
+        .sorted(Comparator.comparingDouble(BusyFlightsResponse::fareAsDouble))
         .collect(toList());
   }
 }

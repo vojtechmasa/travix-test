@@ -1,5 +1,7 @@
 package com.travix.medusa.busyflights.domain.busyflights;
 
+import java.util.Objects;
+
 public class BusyFlightsRequest {
 
     private String origin;
@@ -46,5 +48,22 @@ public class BusyFlightsRequest {
 
     public void setNumberOfPassengers(final int numberOfPassengers) {
         this.numberOfPassengers = numberOfPassengers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BusyFlightsRequest)) return false;
+        BusyFlightsRequest that = (BusyFlightsRequest) o;
+        return numberOfPassengers == that.numberOfPassengers &&
+            Objects.equals(origin, that.origin) &&
+            Objects.equals(destination, that.destination) &&
+            Objects.equals(departureDate, that.departureDate) &&
+            Objects.equals(returnDate, that.returnDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(origin, destination, departureDate, returnDate, numberOfPassengers);
     }
 }

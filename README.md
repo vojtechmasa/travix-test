@@ -1,15 +1,16 @@
 **Vojtech Masa - solution**
 
-- I didn't manage to follow TDD. Normally I would, but I was afraid I can't code everything within the given timeframe
-- Unit tests and integration tests need to be implemented
-- There is an issue with converting Instant to LocalDateTime. Needs to be resolved.
-- A service layer or an object representing BusyFlights airline (following DDD) should be implemented
-- Constraint for max 4 passengers in the request needs to be implemented. Would be located in a service layer or in BusyFlights
-  domain object.
-- Rounding of the price to 2 decimals should be implemented. Simply by formatting the number - BusyFlightsResponse would
-  have the "fare" field of type String rather.
+- I didn't manage to follow TDD perfectly. Normally I would, but I was afraid I can't code everything within the given time frame.
+- Some more tests should be implemented, especially for negative scenarios.
+- A service layer or an object representing BusyFlights airline (following DDD) should be implemented (extract from the controller).
+- Constraint for max 4 passengers in the request needs to be implemented. Would be located in Business objects and cause return HTTP
+  error code.
+- Constraints for codes length (3 chars) should be implemented. Would be located in Business objects and cause return HTTP
+  error code.
 - Classes should be divided into packages more carefully.
-
+- Timezone - I don't see in the assignment how to deal with Timezones. There is no information from the API in which timezone is the localdate.
+  Assuming it is always in UTC, but should be the UTC information present in the response? Currently I implemented it that
+  it is present for ToughJet, but not for CrazyAir (should be rewritten).
 
 **Travix - Problem to be solved**
 

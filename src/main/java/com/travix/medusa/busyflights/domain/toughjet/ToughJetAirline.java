@@ -1,6 +1,6 @@
 package com.travix.medusa.busyflights.domain.toughjet;
 
-import com.travix.medusa.busyflights.domain.Airline;
+import com.travix.medusa.busyflights.domain.ExternalAirline;
 import com.travix.medusa.busyflights.domain.busyflights.BusyFlightsRequest;
 import com.travix.medusa.busyflights.domain.busyflights.BusyFlightsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 @Component
-public class ToughJetAirline implements Airline {
+public class ToughJetAirline implements ExternalAirline {
   private final ToughJetClient toughJetClient;
 
   @Autowired
@@ -32,7 +32,8 @@ public class ToughJetAirline implements Airline {
         .collect(toList());
   }
 
-  private ToughJetRequest toToughJetRequest(BusyFlightsRequest busyFlightsRequest) {
+  //VisibleForTesting
+  static ToughJetRequest toToughJetRequest(BusyFlightsRequest busyFlightsRequest) {
     ToughJetRequest toughJetRequest = new ToughJetRequest();
 
     toughJetRequest.setFrom(busyFlightsRequest.getOrigin());
@@ -44,27 +45,35 @@ public class ToughJetAirline implements Airline {
     return toughJetRequest;
   }
 
-  private static BusyFlightsResponse toBusyFlightsResponse(ToughJetResponse toughJetResponse) {
-    return new BusyFlightsResponse(
-        toughJetResponse.getCarrier(),
-        "toughJet",
-        calculateFinalPrice(toughJetResponse),
-        toughJetResponse.getDepartureAirportName(),
-        toughJetResponse.getArrivalAirportName(),
-        toIsoLocalDateTime(toughJetResponse.getOutboundDateTime()),
-        toIsoLocalDateTime(toughJetResponse.getInboundDateTime())
-    );
+  //VisibleForTesting
+  static BusyFlightsResponse toBusyFlightsResponse(ToughJetResponse toughJetResponse) {
+    BusyFlightsResponse busyFlightsResponse = new BusyFlightsResponse();
+
+    busyFlightsResponse.setAirline(toughJetResponse.getCarrier());
+    busyFlightsResponse.setSupplier("ToughJet");
+    busyFlightsResponse.setFare(calculateFinalPrice(toughJetResponse));
+    busyFlightsResponse.setDepartureAirportCode(toughJetResponse.getDepartureAirportName());
+    busyFlightsResponse.setDestinationAirportCode(toughJetResponse.getArrivalAirportName());
+    busyFlightsResponse.setDepartureDate(toIsoDateTime(toughJetResponse.getOutboundDateTime()));
+    busyFlightsResponse.setArrivalDate(toIsoDateTime(toughJetResponse.getInboundDateTime()));
+
+    return busyFlightsResponse;
   }
 
   private static double calculateFinalPrice(ToughJetResponse toughJetResponse) {
-    return toughJetResponse.getBasePrice() + toughJetResponse.getTax() * (1 - toughJetResponse.getDiscount()/100);
+    double discount = toughJetResponse.getBasePrice()*(toughJetResponse.getDiscount()/100);
+    double discountedPrice = toughJetResponse.getBasePrice() - discount;
+
+    double tax = (discountedPrice/100)*toughJetResponse.getBasePrice();
+
+    return discountedPrice + tax;
   }
 
-  private static String toIsoLocalDateTime(String isoInstant) {
+  private static String toIsoDateTime(String isoInstant) {
     Instant instant = Instant.parse(isoInstant);
 
     return DateTimeFormatter.ISO_DATE_TIME
-        .withZone(ZoneId.systemDefault())
+        .withZone(ZoneId.of("UTC"))
         .format(instant);
   }
 }
